@@ -1,0 +1,3496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-title="pageTitle">Contextly — Build a chatbot from your knowledge</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --paper: #fff;
+      --ink: #171717;
+      --muted: #73736d;
+      --line: #e8e7e1;
+      --accent: #635bff;
+      --accent2: #8d83ff;
+      --green: #2e9b68;
+      --shadow: 0 20px 60px rgba(20, 20, 20, .09);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+    }
+
+    button,
+    input {
+      font: inherit
+    }
+
+    button {
+      cursor: pointer
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin: auto
+    }
+
+    nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      font-size: 21px
+    }
+
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--ink);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 14px
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 28px;
+      color: #5d5d57;
+      font-size: 14px
+    }
+
+    .navlinks a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 17px;
+      font-weight: 700;
+      transition: .2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px
+    }
+
+    .btn:hover {
+      transform: translateY(-1px)
+    }
+
+    .btn-dark {
+      background: var(--ink);
+      color: white
+    }
+
+    .btn-light {
+      background: white;
+      border: 1px solid var(--line)
+    }
+
+    .btn-purple {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 10px 25px rgba(99, 91, 255, .22)
+    }
+
+    .hero {
+      text-align: center;
+      padding: 92px 0 70px
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #deddd7;
+      background: #fff;
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 750;
+      color: #57574f
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #48b77e;
+      box-shadow: 0 0 0 4px #e5f5ed
+    }
+
+    h1 {
+      font-size: clamp(48px, 7vw, 82px);
+      line-height: .96;
+      letter-spacing: -.07em;
+      max-width: 900px;
+      margin: 24px auto 22px
+    }
+
+    .hero p {
+      max-width: 610px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px
+    }
+
+    .mini-note {
+      font-size: 12px;
+      color: #8b8b84;
+      margin-top: 13px
+    }
+
+    .product-preview {
+      margin: 70px auto 0;
+      max-width: 1040px;
+      background: #161616;
+      border-radius: 26px;
+      padding: 10px;
+      box-shadow: var(--shadow)
+    }
+
+    .browser {
+      background: #f5f5f2;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #292929
+    }
+
+    .browserbar {
+      height: 38px;
+      background: #e9e9e5;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 6px
+    }
+
+    .browserbar i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #b7b7b2
+    }
+
+    .preview-ui {
+      display: grid;
+      grid-template-columns: 180px 1fr 285px;
+      min-height: 390px
+    }
+
+    .side {
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 18px 12px;
+      text-align: left
+    }
+
+    .side-title {
+      font-weight: 800;
+      margin: 2px 8px 20px;
+      font-size: 13px
+    }
+
+    .side-item {
+      padding: 10px 9px;
+      border-radius: 9px;
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 3px
+    }
+
+    .side-item.active {
+      background: #f0efff;
+      color: #5149d8;
+      font-weight: 750
+    }
+
+    .chat {
+      background: #fbfbf9;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .chat-top {
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 25px
+    }
+
+    .msg {
+      max-width: 75%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 10px
+    }
+
+    .msg.bot {
+      background: #fff;
+      border: 1px solid var(--line);
+      align-self: flex-start
+    }
+
+    .msg.user {
+      background: var(--ink);
+      color: #fff;
+      align-self: flex-end
+    }
+
+    .composer {
+      margin-top: 14px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px;
+      color: #aaa;
+      font-size: 11px
+    }
+
+    .inspector {
+      background: #fff;
+      border-left: 1px solid var(--line);
+      padding: 20px;
+      text-align: left
+    }
+
+    .inspector h4 {
+      margin: 0 0 15px;
+      font-size: 12px
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 8px
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 17px
+    }
+
+    .stat span {
+      font-size: 10px;
+      color: #888
+    }
+
+    .section {
+      padding: 95px 0
+    }
+
+    .section-head {
+      max-width: 650px;
+      margin-bottom: 42px
+    }
+
+    .section-head h2 {
+      font-size: 46px;
+      letter-spacing: -.055em;
+      line-height: 1.02;
+      margin: 12px 0
+    }
+
+    .section-head p {
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      perspective: 1000px
+    }
+
+    .steps,
+    .pricing {
+      perspective: 1000px
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 25px;
+      min-height: 210px
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: #f0efff;
+      color: #5149d8;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      margin-bottom: 28px
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 18px
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin: 0
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    .step {
+      padding: 27px;
+      background: #191919;
+      color: #fff;
+      border-radius: 20px;
+      min-height: 240px
+    }
+
+    .step-num {
+      color: #a9a4ff;
+      font-weight: 800;
+      font-size: 12px
+    }
+
+    .step h3 {
+      font-size: 23px;
+      margin: 45px 0 10px;
+      letter-spacing: -.03em
+    }
+
+    .step p {
+      color: #aaa;
+      line-height: 1.5;
+      font-size: 13px
+    }
+
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    .price {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 27px;
+      position: relative
+    }
+
+    .price.featured {
+      border: 2px solid var(--accent);
+      padding: 26px;
+      box-shadow: 0 18px 50px rgba(99, 91, 255, .12)
+    }
+
+    .badge {
+      position: absolute;
+      top: 17px;
+      right: 17px;
+      background: #eceaff;
+      color: #5149d8;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 6px 8px;
+      border-radius: 999px
+    }
+
+    .price h3 {
+      margin: 0
+    }
+
+    .price .amount {
+      font-size: 40px;
+      letter-spacing: -.06em;
+      margin: 20px 0 3px;
+      font-weight: 800
+    }
+
+    .price .period {
+      color: #888;
+      font-size: 12px
+    }
+
+    .features {
+      margin: 25px 0;
+      display: grid;
+      gap: 11px;
+      font-size: 13px;
+      color: #555
+    }
+
+    .features span:before {
+      content: "✓";
+      color: var(--green);
+      font-weight: 800;
+      margin-right: 9px
+    }
+
+    footer {
+      padding: 45px 0;
+      border-top: 1px solid var(--line);
+      color: #8a8a83;
+      font-size: 12px
+    }
+
+    /* LIQUID GLASS SYSTEM — enhanced */
+    :root {
+      --glass-bg: rgba(255, 255, 255, .42);
+      --glass-bg-strong: rgba(255, 255, 255, .62);
+      --glass-border: rgba(255, 255, 255, .78);
+      --glass-border-dark: rgba(255, 255, 255, .16);
+      --glass-shadow:
+        0 8px 32px rgba(31, 28, 74, .06),
+        0 28px 80px rgba(31, 28, 74, .12),
+        inset 0 1px 0 rgba(255, 255, 255, .85),
+        inset 0 -1px 0 rgba(255, 255, 255, .25);
+      --glass-blur: 40px;
+      --ease-out: cubic-bezier(.22, 1, .36, 1);
+      --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    html {
+      background: #edf0f8
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 80% 50% at 12% 8%, rgba(126, 117, 255, .32), transparent 42%),
+        radial-gradient(ellipse 60% 40% at 88% 12%, rgba(93, 210, 255, .24), transparent 38%),
+        radial-gradient(ellipse 50% 45% at 70% 78%, rgba(255, 174, 226, .20), transparent 40%),
+        radial-gradient(ellipse 40% 30% at 30% 60%, rgba(167, 139, 250, .12), transparent 35%),
+        linear-gradient(145deg, #f5f7fc 0%, #eef1f9 40%, #f6f5fb 70%, #f0f4fa 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(99, 91, 255, .20), transparent 24%),
+        radial-gradient(circle at 82% 18%, rgba(56, 189, 248, .16), transparent 22%),
+        radial-gradient(circle at 68% 72%, rgba(244, 114, 182, .14), transparent 24%),
+        radial-gradient(circle at 28% 78%, rgba(139, 92, 246, .12), transparent 20%);
+      animation: orbDrift 18s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    @keyframes orbDrift {
+      0% {
+        transform: translate(0, 0) rotate(0deg) scale(1)
+      }
+
+      25% {
+        transform: translate(4%, -3%) rotate(2deg) scale(1.06)
+      }
+
+      50% {
+        transform: translate(-3%, 2%) rotate(-1.5deg) scale(.97)
+      }
+
+      75% {
+        transform: translate(2%, 4%) rotate(1.5deg) scale(1.04)
+      }
+
+      100% {
+        transform: translate(-2%, -2%) rotate(0deg) scale(1.02)
+      }
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: .28;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    /* cursor spotlight */
+    #spotlight {
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle, rgba(99, 91, 255, .14) 0%, rgba(141, 131, 255, .06) 35%, transparent 68%);
+      transform: translate(-50%, -50%);
+      transition: opacity .4s;
+      opacity: 0;
+      mix-blend-mode: soft-light;
+    }
+
+    body:hover #spotlight {
+      opacity: 1
+    }
+
+    .container {
+      position: relative;
+      z-index: 1
+    }
+
+    nav {
+      margin-top: 14px;
+      height: 64px;
+      padding: 8px 10px 8px 14px;
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, .58), rgba(255, 255, 255, .38));
+      backdrop-filter: blur(var(--glass-blur)) saturate(190%);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%);
+      box-shadow: var(--glass-shadow);
+      transition: box-shadow .4s, transform .4s var(--ease-out);
+    }
+
+    nav:hover {
+      box-shadow: 0 12px 40px rgba(31, 28, 74, .1), 0 32px 90px rgba(31, 28, 74, .12), inset 0 1px 0 #fff
+    }
+
+    .logo-mark {
+      background: linear-gradient(145deg, #171717, #555);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, .35), 0 8px 20px rgba(0, 0, 0, .15);
+      transition: transform .4s var(--ease-spring)
+    }
+
+    .navlinks a {
+      padding: 9px 12px;
+      border-radius: 14px;
+      transition: all .3s var(--ease-out)
+    }
+
+    .navlinks a:hover {
+      background: rgba(255, 255, 255, .65);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9);
+      transform: translateY(-1px)
+    }
+
+    .nav-actions {
+      align-items: center
+    }
+
+    .btn {
+      border: 1px solid rgba(255, 255, 255, .6) !important;
+      box-shadow: 0 10px 28px rgba(31, 28, 74, .08), inset 0 1px 0 rgba(255, 255, 255, .6);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: transform .35s var(--ease-out), box-shadow .35s, background .25s !important;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.02)
+    }
+
+    .btn:active {
+      transform: scale(.97) !important
+    }
+
+    .btn-light {
+      background: rgba(255, 255, 255, .58) !important;
+      color: var(--ink)
+    }
+
+    .btn-light:hover {
+      background: rgba(255, 255, 255, .78) !important;
+      box-shadow: 0 14px 32px rgba(31, 28, 74, .1), inset 0 1px 0 #fff
+    }
+
+    .btn-dark {
+      background: rgba(18, 18, 24, .88) !important
+    }
+
+    .btn-dark:hover {
+      background: rgba(28, 28, 36, .95) !important;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .15)
+    }
+
+    .btn-purple {
+      background: linear-gradient(135deg, rgba(99, 91, 255, .95), rgba(141, 131, 255, .88)) !important;
+      box-shadow: 0 14px 34px rgba(99, 91, 255, .32), inset 0 1px 0 rgba(255, 255, 255, .5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-purple::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, .35) 50%, transparent 80%);
+      transform: translateX(-100%);
+      transition: transform .6s var(--ease-out);
+    }
+
+    .btn-purple:hover::after {
+      transform: translateX(100%)
+    }
+
+    .btn-purple:hover {
+      box-shadow: 0 18px 42px rgba(99, 91, 255, .42), inset 0 1px 0 rgba(255, 255, 255, .55) !important
+    }
+
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .45);
+      border: 1px solid rgba(255, 255, 255, .75);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 8px 24px rgba(40, 35, 90, .08);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+    }
+
+    .lang-btn {
+      border: 0;
+      background: transparent;
+      color: #777;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .04em;
+      cursor: pointer;
+      transition: all .3s var(--ease-out)
+    }
+
+    .lang-btn.active {
+      color: #222;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 3px 14px rgba(30, 30, 60, .12), inset 0 1px 0 #fff
+    }
+
+    .lang-btn:not(.active):hover {
+      color: #444;
+      background: rgba(255, 255, 255, .4)
+    }
+
+    .lang-switch>span {
+      width: 1px;
+      height: 12px;
+      background: rgba(0, 0, 0, .10)
+    }
+
+    .eyebrow,
+    .card,
+    .price,
+    .panel,
+    .product-preview,
+    .modal,
+    .browser {
+      background: linear-gradient(145deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .32)) !important;
+      border: 1px solid rgba(255, 255, 255, .75) !important;
+      backdrop-filter: blur(var(--glass-blur)) saturate(190%) !important;
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%) !important;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* specular shine sweep on glass cards */
+    .card::before,
+    .price::before,
+    .panel::before,
+    .modal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(125deg, transparent 30%, rgba(255, 255, 255, .35) 48%, transparent 62%);
+      opacity: 0;
+      transform: translateX(-40%);
+      transition: opacity .5s, transform .8s var(--ease-out);
+    }
+
+    .card:hover::before,
+    .price:hover::before,
+    .panel:hover::before,
+    .modal:hover::before {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+
+    /* Keep steps solid black — no glass */
+    .step {
+      background: linear-gradient(160deg, #161616 0%, #0e0e12 100%) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255, 255, 255, .1) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow:
+        0 24px 56px rgba(0, 0, 0, .28),
+        inset 0 1px 0 rgba(255, 255, 255, .08),
+        inset 0 -1px 0 rgba(0, 0, 0, .4) !important;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -20%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(circle, rgba(168, 164, 255, .12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .step .step-num {
+      color: #b4aeff;
+      letter-spacing: .06em
+    }
+
+    .step h3 {
+      color: #fff
+    }
+
+    .step p {
+      color: #a8a8a8
+    }
+
+    .eyebrow {
+      box-shadow: var(--glass-shadow)
+    }
+
+    .product-preview {
+      background: rgba(14, 14, 22, .82) !important;
+      box-shadow: 0 40px 100px rgba(20, 18, 50, .28), inset 0 1px 0 rgba(255, 255, 255, .1) !important;
+    }
+
+    .browser {
+      background: rgba(248, 249, 252, .58) !important
+    }
+
+    .browserbar {
+      background: rgba(255, 255, 255, .38) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, .55)
+    }
+
+    .side,
+    .inspector,
+    .chat,
+    .composer,
+    .stat,
+    .preview-chat,
+    .upload,
+    .doc,
+    .modal-price,
+    .chat-input {
+      background: rgba(255, 255, 255, .48) !important;
+      border-color: rgba(255, 255, 255, .7) !important;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%)
+    }
+
+    .msg.bot,
+    .bubble.bot {
+      background: rgba(255, 255, 255, .65) !important;
+      border-color: rgba(255, 255, 255, .8) !important
+    }
+
+    .msg.user,
+    .bubble.me {
+      background: rgba(18, 18, 26, .88) !important
+    }
+
+    .card,
+    .price,
+    .panel {
+      transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .35s, background .35s;
+    }
+
+    .card:hover,
+    .price:hover,
+    .panel:hover {
+      transform: translateY(-8px) scale(1.015);
+      box-shadow:
+        0 12px 28px rgba(43, 38, 105, .08),
+        0 36px 80px rgba(43, 38, 105, .16),
+        inset 0 1px 0 rgba(255, 255, 255, .95);
+      border-color: rgba(255, 255, 255, .95) !important;
+    }
+
+    .step {
+      transition: transform .45s var(--ease-out), box-shadow .45s, border-color .35s;
+    }
+
+    .step:hover {
+      transform: translateY(-8px) scale(1.02) !important;
+      box-shadow:
+        0 32px 70px rgba(0, 0, 0, .38),
+        0 0 0 1px rgba(168, 164, 255, .2),
+        inset 0 1px 0 rgba(255, 255, 255, .12) !important;
+      border-color: rgba(168, 164, 255, .35) !important;
+    }
+
+    .app {
+      background: transparent;
+      position: relative;
+    }
+
+    .app-shell {
+      gap: 14px;
+      padding: 14px
+    }
+
+    .app-sidebar {
+      border: 1px solid var(--glass-border-dark);
+      border-radius: 28px;
+      background: rgba(22, 22, 28, .72) !important;
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+      box-shadow: 0 24px 80px rgba(22, 20, 50, .20), inset 0 1px 0 rgba(255, 255, 255, .12);
+    }
+
+    .workspace {
+      background: rgba(255, 255, 255, .10) !important;
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08)
+    }
+
+    .app-nav button.active,
+    .app-nav button:hover {
+      background: rgba(255, 255, 255, .12) !important;
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 8px 24px rgba(0, 0, 0, .10)
+    }
+
+    .app-main {
+      border-radius: 28px;
+      overflow: hidden
+    }
+
+    .app-top {
+      height: 66px;
+      border: 1px solid rgba(255, 255, 255, .68) !important;
+      border-radius: 24px;
+      margin: 0 0 14px;
+      background: rgba(255, 255, 255, .48) !important;
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow: var(--glass-shadow)
+    }
+
+    .app-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .page {
+      padding: 30px 20px;
+      max-width: 1100px
+    }
+
+    .panel {
+      box-shadow: var(--glass-shadow)
+    }
+
+    input {
+      background: rgba(255, 255, 255, .45) !important;
+      border-color: rgba(255, 255, 255, .72) !important;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75), 0 5px 18px rgba(40, 35, 90, .05)
+    }
+
+    input:focus {
+      border-color: rgba(99, 91, 255, .45) !important;
+      box-shadow: 0 0 0 4px rgba(99, 91, 255, .10), inset 0 1px 0 #fff
+    }
+
+    .paywall {
+      background: rgba(15, 15, 30, .22);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%)
+    }
+
+    .modal {
+      background: rgba(250, 251, 255, .66) !important;
+      box-shadow: 0 40px 120px rgba(25, 22, 65, .25), inset 0 1px 0 rgba(255, 255, 255, .9)
+    }
+
+    .toast {
+      background: rgba(25, 25, 35, .72) !important;
+      border: 1px solid rgba(255, 255, 255, .18);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 20px 60px rgba(20, 18, 50, .22)
+    }
+
+    @media(max-width:850px) {
+      nav {
+        margin: 8px 0 0;
+        height: auto;
+        min-height: 64px
+      }
+
+      .nav-actions .btn {
+        display: none
+      }
+
+      .navlinks {
+        display: none
+      }
+
+      .app-shell {
+        padding: 8px
+      }
+
+      .app-top {
+        margin-bottom: 8px
+      }
+
+      .app-top .crumb {
+        font-size: 11px
+      }
+
+      .lang-switch {
+        transform: scale(.94)
+      }
+    }
+
+    /* APP */
+    .app {
+      min-height: 100vh;
+      background: #f3f3ef
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 235px 1fr;
+      min-height: 100vh
+    }
+
+    .app-sidebar {
+      background: #171717;
+      color: #fff;
+      padding: 20px 13px;
+      display: flex;
+      flex-direction: column
+    }
+
+    .app-logo {
+      padding: 8px 10px 26px
+    }
+
+    .app-logo .logo-mark {
+      background: #fff;
+      color: #171717
+    }
+
+    .workspace {
+      background: #232323;
+      color: #ddd;
+      border-radius: 10px;
+      padding: 11px;
+      font-size: 12px;
+      margin: 0 3px 20px
+    }
+
+    .app-nav {
+      display: grid;
+      gap: 3px
+    }
+
+    .app-nav button {
+      border: 0;
+      background: transparent;
+      color: #a9a9a4;
+      text-align: left;
+      padding: 11px;
+      border-radius: 9px;
+      font-size: 13px
+    }
+
+    .app-nav button.active,
+    .app-nav button:hover {
+      background: #2a2a2a;
+      color: #fff
+    }
+
+    .app-bottom {
+      margin-top: auto;
+      padding: 10px;
+      color: #888;
+      font-size: 11px
+    }
+
+    .app-main {
+      min-width: 0
+    }
+
+    .app-top {
+      height: 66px;
+      border-bottom: 1px solid #deddd7;
+      background: #fafaf7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px
+    }
+
+    .crumb {
+      font-size: 13px;
+      color: #777
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ddd;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800
+    }
+
+    .page {
+      padding: 35px;
+      max-width: 1100px
+    }
+
+    .page h2 {
+      font-size: 32px;
+      letter-spacing: -.045em;
+      margin: 0 0 7px
+    }
+
+    .page-sub {
+      color: #85857e;
+      font-size: 13px;
+      margin-bottom: 27px
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 17px
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #e2e1db;
+      border-radius: 18px;
+      padding: 20px
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px
+    }
+
+    .panel-title h3 {
+      font-size: 14px;
+      margin: 0
+    }
+
+    .upload {
+      border: 1.5px dashed #d6d4cd;
+      border-radius: 15px;
+      padding: 34px;
+      text-align: center;
+      transition: .2s
+    }
+
+    .upload:hover {
+      border-color: var(--accent);
+      background: #faf9ff
+    }
+
+    .upload-icon {
+      font-size: 26px;
+      margin-bottom: 10px
+    }
+
+    .upload strong {
+      font-size: 13px;
+      display: block
+    }
+
+    .upload small {
+      color: #999;
+      font-size: 11px
+    }
+
+    .docs {
+      margin-top: 15px;
+      display: grid;
+      gap: 8px
+    }
+
+    .doc {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border: 1px solid #eee;
+      padding: 10px;
+      border-radius: 11px
+    }
+
+    .doc-icon {
+      width: 29px;
+      height: 29px;
+      border-radius: 8px;
+      background: #fff0ed;
+      display: grid;
+      place-items: center;
+      font-size: 12px
+    }
+
+    .doc span {
+      font-size: 12px
+    }
+
+    .doc small {
+      display: block;
+      color: #999;
+      font-size: 10px;
+      margin-top: 2px
+    }
+
+    .preview-chat {
+      height: 360px;
+      background: #fbfbfa;
+      border: 1px solid #e6e5df;
+      border-radius: 15px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column
+    }
+
+    .chat-head {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #ecebe6
+    }
+
+    .bot-avatar {
+      width: 31px;
+      height: 31px;
+      border-radius: 10px;
+      background: #635bff;
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800
+    }
+
+    .chat-head strong {
+      font-size: 12px
+    }
+
+    .online {
+      font-size: 9px;
+      color: #42a56f
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 16px 2px;
+      overflow: auto
+    }
+
+    .bubble {
+      font-size: 11px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      border-radius: 12px;
+      max-width: 82%;
+      margin-bottom: 8px
+    }
+
+    .bubble.bot {
+      background: white;
+      border: 1px solid #e8e7e1
+    }
+
+    .bubble.me {
+      background: #171717;
+      color: #fff;
+      margin-left: auto
+    }
+
+    .chat-input {
+      border: 1px solid #e3e2dc;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      color: #aaa;
+      font-size: 10px
+    }
+
+    .tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      padding: 8px 11px;
+      border-radius: 8px;
+      color: #777;
+      font-size: 12px
+    }
+
+    .tab.active {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #222;
+      font-weight: 700
+    }
+
+    .codebox {
+      background: #171717;
+      color: #ddd;
+      border-radius: 14px;
+      padding: 17px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      line-height: 1.7;
+      overflow: auto;
+      white-space: pre-wrap
+    }
+
+    .copyrow {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px
+    }
+
+    .toggle {
+      width: 40px;
+      height: 23px;
+      border-radius: 99px;
+      background: #635bff;
+      padding: 3px
+    }
+
+    .toggle i {
+      display: block;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #fff;
+      margin-left: auto
+    }
+
+    .paywall {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 15, 15, .48);
+      backdrop-filter: blur(5px);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      z-index: 20
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      background: #fafaf7;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .25)
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start
+    }
+
+    .close {
+      border: 0;
+      background: #eee;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px
+    }
+
+    .modal h2 {
+      font-size: 30px;
+      letter-spacing: -.05em;
+      margin: 0 0 7px
+    }
+
+    .modal p {
+      color: #777;
+      font-size: 13px;
+      margin: 0
+    }
+
+    .modal-prices {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px
+    }
+
+    .modal-price {
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 17px;
+      border-radius: 15px
+    }
+
+    .modal-price.active {
+      border: 2px solid var(--accent);
+      padding: 16px
+    }
+
+    .modal-price b {
+      font-size: 13px
+    }
+
+    .modal-price strong {
+      display: block;
+      font-size: 25px;
+      margin: 9px 0
+    }
+
+    .modal-price span {
+      font-size: 10px;
+      color: #888
+    }
+
+    .modal-price button {
+      width: 100%;
+      margin-top: 15px
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: #171717;
+      color: #fff;
+      padding: 12px 15px;
+      border-radius: 11px;
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: .25s;
+      z-index: 40
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: none
+    }
+
+    @media(max-width:850px) {
+      .navlinks {
+        display: none
+      }
+
+      .preview-ui {
+        grid-template-columns: 1fr
+      }
+
+      .side,
+      .inspector {
+        display: none
+      }
+
+      .grid3,
+      .steps,
+      .pricing,
+      .modal-prices {
+        grid-template-columns: 1fr
+      }
+
+      .app-shell {
+        grid-template-columns: 1fr
+      }
+
+      .app-sidebar {
+        display: none
+      }
+
+      .app-grid {
+        grid-template-columns: 1fr
+      }
+
+      .page {
+        padding: 22px
+      }
+
+      .hero {
+        padding-top: 60px
+      }
+    }
+
+    /* CREATIVE POLISH */
+    .logo {
+      cursor: pointer;
+      user-select: none
+    }
+
+    .logo:hover .logo-mark {
+      transform: rotate(-10deg) scale(1.1)
+    }
+
+    .hero {
+      position: relative
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      border: 1px solid rgba(99, 91, 255, .18);
+      animation: ringPulse 8s ease-in-out infinite;
+    }
+
+    .hero::before {
+      width: 240px;
+      height: 240px;
+      left: -130px;
+      top: 30px;
+      animation-delay: 0s
+    }
+
+    .hero::after {
+      width: 160px;
+      height: 160px;
+      right: -80px;
+      top: 160px;
+      animation-delay: 2s
+    }
+
+    @keyframes ringPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .5
+      }
+
+      50% {
+        transform: scale(1.08);
+        opacity: 1
+      }
+    }
+
+    .eyebrow {
+      box-shadow: 0 8px 30px rgba(30, 30, 30, .04)
+    }
+
+    .product-preview {
+      position: relative;
+      overflow: hidden
+    }
+
+    .product-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, .12) 45%, rgba(168, 164, 255, .08) 55%, transparent 75%);
+      transform: translateX(-120%);
+      animation: shine 6s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+
+      0%,
+      40% {
+        transform: translateX(-120%)
+      }
+
+      70%,
+      100% {
+        transform: translateX(120%)
+      }
+    }
+
+    .app-logo {
+      cursor: pointer
+    }
+
+    .app-logo:hover {
+      color: #fff
+    }
+
+    .app-nav button {
+      transition: transform .3s var(--ease-out), background .25s, color .25s
+    }
+
+    .app-nav button:hover {
+      transform: translateX(5px)
+    }
+
+    .workspace {
+      cursor: pointer;
+      transition: background .3s
+    }
+
+    .workspace:hover {
+      background: rgba(255, 255, 255, .16) !important
+    }
+
+    .avatar {
+      box-shadow: 0 0 0 3px rgba(99, 91, 255, .12);
+      transition: box-shadow .3s, transform .3s var(--ease-spring)
+    }
+
+    .avatar:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 0 4px rgba(99, 91, 255, .22)
+    }
+
+    .typing-dot {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #aaa;
+      margin: 0 2px;
+      animation: blink 1s infinite alternate;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    @keyframes blink {
+      from {
+        opacity: .25;
+        transform: translateY(0)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(-2px)
+      }
+    }
+
+    /* SCROLL REVEAL — smoother, deeper */
+    .reveal {
+      opacity: 0;
+      transform: translateY(48px) scale(.96);
+      filter: blur(10px);
+      transition:
+        opacity .9s var(--ease-out),
+        transform 1s var(--ease-out),
+        filter .85s ease;
+      will-change: opacity, transform, filter;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: .1s
+    }
+
+    .reveal-delay-2 {
+      transition-delay: .22s
+    }
+
+    .reveal-delay-3 {
+      transition-delay: .34s
+    }
+
+    .reveal-delay-4 {
+      transition-delay: .46s
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-48px);
+      filter: blur(8px);
+      transition: opacity .85s var(--ease-out), transform 1s var(--ease-out), filter .75s ease;
+    }
+
+    .reveal-left.revealed {
+      opacity: 1;
+      transform: translateX(0);
+      filter: blur(0)
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(48px);
+      filter: blur(8px);
+      transition: opacity .85s var(--ease-out), transform 1s var(--ease-out), filter .75s ease;
+    }
+
+    .reveal-right.revealed {
+      opacity: 1;
+      transform: translateX(0);
+      filter: blur(0)
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(.9);
+      filter: blur(8px);
+      transition: opacity .85s var(--ease-out), transform 1s var(--ease-out), filter .75s ease;
+    }
+
+    .reveal-scale.revealed {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0)
+    }
+
+    /* hero entrance */
+    .hero .eyebrow,
+    .hero h1,
+    .hero p,
+    .hero-cta,
+    .mini-note,
+    .product-preview {
+      opacity: 0;
+      transform: translateY(28px);
+      animation: heroIn 1.05s var(--ease-out) forwards;
+    }
+
+    .hero .eyebrow {
+      animation-delay: .08s
+    }
+
+    .hero h1 {
+      animation-delay: .18s
+    }
+
+    .hero p {
+      animation-delay: .32s
+    }
+
+    .hero-cta {
+      animation-delay: .46s
+    }
+
+    .mini-note {
+      animation-delay: .56s
+    }
+
+    .product-preview {
+      animation-delay: .68s;
+      transform: translateY(52px) scale(.95)
+    }
+
+    @keyframes heroIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    /* glass magnetic tilt hint */
+    .card.tilt,
+    .price.tilt,
+    .step.tilt {
+      transition: transform .2s ease-out, box-shadow .35s;
+    }
+
+    /* enhanced paywall / toast */
+    .paywall {
+      background: rgba(12, 12, 28, .35) !important;
+      backdrop-filter: blur(22px) saturate(150%) !important;
+      -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
+      animation: fadeIn .35s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .modal {
+      animation: modalIn .45s var(--ease-out);
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(.96)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .toast {
+      backdrop-filter: blur(28px) !important;
+      -webkit-backdrop-filter: blur(28px) !important;
+      box-shadow: 0 24px 60px rgba(20, 18, 50, .28), inset 0 1px 0 rgba(255, 255, 255, .12) !important;
+    }
+
+    .toast.show {
+      transform: translateY(0) !important
+    }
+
+    /* icon pulse on cards */
+    .card .icon {
+      transition: transform .4s var(--ease-spring), box-shadow .35s;
+    }
+
+    .card:hover .icon {
+      transform: scale(1.12) rotate(-4deg);
+      box-shadow: 0 8px 20px rgba(99, 91, 255, .25);
+    }
+
+    /* upload hover glow */
+    .upload {
+      transition: border-color .3s, background .3s, box-shadow .3s, transform .3s var(--ease-out)
+    }
+
+    .upload:hover {
+      border-color: rgba(99, 91, 255, .55) !important;
+      background: rgba(250, 249, 255, .7) !important;
+      box-shadow: 0 0 0 4px rgba(99, 91, 255, .08), 0 12px 32px rgba(99, 91, 255, .1);
+      transform: translateY(-2px);
+    }
+
+    /* section head soft fade */
+    .section-head.reveal.revealed h2 {
+      background: linear-gradient(135deg, #171717 30%, #4a45b0 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* SMOOTH LANG + PAGE TRANSITIONS */
+    body.lang-fading [data-i18n],
+    body.lang-fading [data-i18n-placeholder] {
+      opacity: .25;
+      filter: blur(2px);
+      transition: opacity .16s ease, filter .16s ease;
+    }
+
+    body.lang-faded-in [data-i18n],
+    body.lang-faded-in [data-i18n-placeholder] {
+      animation: langIn .32s var(--ease-out) both;
+    }
+
+    @keyframes langIn {
+      from {
+        opacity: 0;
+        filter: blur(3px);
+        transform: translateY(4px)
+      }
+
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: none
+      }
+    }
+
+    .page {
+      transition: opacity .22s ease, transform .28s var(--ease-out);
+    }
+
+    .page.page-exit {
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+
+    .page.page-enter {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    .app-main {
+      overflow: auto;
+      scroll-behavior: smooth;
+    }
+
+    .section {
+      scroll-margin-top: 100px;
+    }
+
+    /* LOGIN MODAL */
+    .login-modal {
+      width: min(420px, 100%) !important
+    }
+
+    .login-form {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px
+    }
+
+    .login-form label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #666;
+      margin-top: 6px
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      border: 1px solid rgba(0, 0, 0, .08) !important;
+      background: rgba(255, 255, 255, .7) !important;
+    }
+
+    .login-hint {
+      font-size: 11px;
+      color: #999;
+      margin: 4px 0 0;
+      line-height: 1.4
+    }
+
+    .login-switch {
+      border: 0;
+      background: transparent;
+      color: #635bff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 0 0;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .login-switch:hover {
+      text-decoration: underline
+    }
+
+    /* SMART BOT UI */
+    .smart-bot-shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+      min-height: 560px;
+      max-width: 980px;
+    }
+
+    .bot-list-panel {
+      background: rgba(255, 255, 255, .5) !important;
+      border: 1px solid rgba(255, 255, 255, .75);
+      border-radius: 20px;
+      padding: 16px 12px;
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bot-list-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #555;
+      padding: 6px 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bot-list-title::before {
+      content: "▣";
+      opacity: .5
+    }
+
+    .bot-list-item {
+      border: 0;
+      background: transparent;
+      text-align: left;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all .25s var(--ease-out);
+    }
+
+    .bot-list-item:hover {
+      background: rgba(99, 91, 255, .08);
+      color: #333
+    }
+
+    .bot-list-item.active {
+      background: rgba(99, 91, 255, .14);
+      color: #4a43c9;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6);
+    }
+
+    .bot-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #c5c5c5;
+      transition: background .25s
+    }
+
+    .bot-list-item.active .bot-dot {
+      background: #635bff;
+      box-shadow: 0 0 0 3px rgba(99, 91, 255, .2);
+      animation: dotPulse 2.2s ease-in-out infinite
+    }
+
+    @keyframes dotPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 3px rgba(99, 91, 255, .2)
+      }
+
+      50% {
+        box-shadow: 0 0 0 7px rgba(99, 91, 255, .06)
+      }
+    }
+
+    .bot-list-item {
+      position: relative
+    }
+
+    .bot-list-item:active {
+      transform: scale(.98)
+    }
+
+    .bot-list-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid rgba(0, 0, 0, .06);
+      display: grid;
+      gap: 6px
+    }
+
+    .bot-upload-btn {
+      border: 0;
+      background: transparent;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 650;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all .25s;
+    }
+
+    .bot-upload-btn:hover {
+      background: rgba(99, 91, 255, .08);
+      color: #4a43c9
+    }
+
+    .bot-upload-btn.secondary {
+      color: #888;
+      font-weight: 500
+    }
+
+    .bot-chat-panel {
+      background: rgba(255, 255, 255, .48) !important;
+      border: 1px solid rgba(255, 255, 255, .75);
+      border-radius: 22px;
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      min-height: 560px;
+      overflow: hidden;
+    }
+
+    .bot-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bot-msg {
+      max-width: 82%;
+      padding: 12px 15px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.55;
+      animation: msgIn .5s cubic-bezier(.22, 1, .36, 1) both;
+      transition: transform .2s var(--ease-out), box-shadow .2s var(--ease-out);
+    }
+
+    .bot-msg:hover {
+      transform: translateY(-1px)
+    }
+
+    @keyframes msgIn {
+      0% {
+        opacity: 0;
+        transform: translateY(16px) scale(.92);
+        filter: blur(4px)
+      }
+
+      55% {
+        opacity: 1;
+        filter: blur(0)
+      }
+
+      100% {
+        opacity: 1;
+        transform: none;
+        filter: blur(0)
+      }
+    }
+
+    .bot-msg.bot {
+      align-self: flex-start;
+      background: rgba(240, 242, 250, .9);
+      border: 1px solid rgba(200, 205, 230, .45);
+      color: #2a2a35;
+      box-shadow: 0 2px 10px rgba(60, 60, 110, .05);
+    }
+
+    .bot-msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #5b54f0, #7b74ff);
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(99, 91, 255, .28);
+      animation: msgInUser .42s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    @keyframes msgInUser {
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(.95) translateX(10px)
+      }
+
+      100% {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .bot-msg.system {
+      align-self: flex-start;
+      background: rgba(236, 248, 242, .95);
+      border: 1px solid rgba(120, 200, 150, .3);
+      color: #1a5c3a;
+      font-size: 12.5px;
+    }
+
+    .bot-msg.file {
+      align-self: flex-start;
+      background: rgba(245, 247, 255, .95);
+      border: 1px solid rgba(160, 170, 220, .35);
+      color: #3a3a55;
+      font-size: 12.5px;
+    }
+
+    .bot-msg .msg-icon {
+      margin-right: 6px
+    }
+
+    .bot-quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-self: flex-start;
+      max-width: 100%;
+      animation: msgIn .45s var(--ease-out) .05s both;
+    }
+
+    .bot-chip {
+      border: 1px solid rgba(99, 91, 255, .32);
+      background: rgba(99, 91, 255, .07);
+      color: #4a43c9;
+      font-size: 12px;
+      font-weight: 650;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .22s var(--ease-out);
+      white-space: nowrap;
+    }
+
+    .bot-chip:hover {
+      background: rgba(99, 91, 255, .16);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(99, 91, 255, .18)
+    }
+
+    .bot-chip:active {
+      transform: scale(.96)
+    }
+
+    .bot-typing {
+      align-self: flex-start;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(240, 242, 250, .9);
+      border: 1px solid rgba(200, 205, 230, .4);
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      animation: msgIn .3s var(--ease-out) both;
+    }
+
+    .bot-typing i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6b63ff, #8d83ff);
+      animation: typeDot 1.1s cubic-bezier(.45, 0, .55, 1) infinite;
+    }
+
+    .bot-typing i:nth-child(2) {
+      animation-delay: .15s
+    }
+
+    .bot-typing i:nth-child(3) {
+      animation-delay: .3s
+    }
+
+    @keyframes typeDot {
+
+      0%,
+      60%,
+      100% {
+        opacity: .35;
+        transform: translateY(0) scale(.8)
+      }
+
+      30% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1)
+      }
+    }
+
+    .bot-typing-label {
+      font-size: 11px;
+      color: #8b8ba3;
+      margin-left: 2px;
+      font-weight: 600
+    }
+
+    .bot-chat-composer {
+      display: flex;
+      gap: 10px;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(0, 0, 0, .05);
+      background: rgba(255, 255, 255, .35);
+    }
+
+    .bot-chat-composer input {
+      flex: 1;
+      border: 1px solid rgba(0, 0, 0, .08) !important;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, .7) !important;
+      transition: box-shadow .25s var(--ease-out), border-color .25s;
+    }
+
+    .bot-chat-composer input:focus {
+      outline: none;
+      border-color: rgba(99, 91, 255, .5) !important;
+      box-shadow: 0 0 0 3px rgba(99, 91, 255, .14), 0 8px 20px rgba(99, 91, 255, .12);
+    }
+
+    .bot-send {
+      padding: 12px 20px;
+      border-radius: 14px;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden
+    }
+
+    .bot-send.sending {
+      pointer-events: none;
+      opacity: .85
+    }
+
+    .bot-send.sending::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .4), transparent);
+      transform: translateX(-100%);
+      animation: sendSweep .9s linear infinite;
+    }
+
+    @keyframes sendSweep {
+      to {
+        transform: translateX(100%)
+      }
+    }
+
+    .sparkle-particle {
+      position: fixed;
+      z-index: 9999;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, #a39bff, #635bff 70%);
+      animation: sparkleFly .9s ease-out forwards;
+    }
+
+    @keyframes sparkleFly {
+      to {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0
+      }
+    }
+
+    @media(max-width:850px) {
+      .smart-bot-shell {
+        grid-template-columns: 1fr
+      }
+
+      .bot-list-panel {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center
+      }
+
+      .bot-list-footer {
+        width: 100%;
+        border-top: 0;
+        padding-top: 8px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="spotlight" aria-hidden="true"></div>
+
+  <div id="landing">
+    <div class="container">
+      <nav>
+        <div class="logo" onclick="goHome()" title="Back to Contextly home"><span class="logo-mark">C</span>contextly
+        </div>
+        <div class="navlinks"><a href="#product" data-i18n="productNav">Product</a><a href="#how" data-i18n="howNav">How
+            it works</a><a href="#pricing" data-i18n="pricingNav">Pricing</a></div>
+        <div class="nav-actions">
+          <div class="lang-switch" aria-label="Language">
+            <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+            <span></span>
+            <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+          </div>
+          <button class="btn btn-light" data-i18n="login" onclick="openLogin()">Log in</button>
+          <button class="btn btn-dark" data-i18n="startBuilding" onclick="openApp()">Start building</button>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <span class="eyebrow"><i class="dot"></i> <span data-i18n="eyebrow">Your knowledge, finally useful</span></span>
+        <h1 data-i18n="heroTitle">Turn company docs into a chatbot people actually want to use.</h1>
+        <p data-i18n="heroText">Contextly learns from your website, PDFs, help center and internal docs — then gives
+          your customers instant, accurate answers.</p>
+        <div class="hero-cta"><button class="btn btn-dark" data-i18n="buildChatbot" onclick="openApp()">Build my chatbot
+            →</button><button class="btn btn-light" data-i18n="seeHow"
+            onclick="document.querySelector('#product').scrollIntoView()">See how it works</button></div>
+        <div class="mini-note" data-i18n="miniNote">No credit card · Set up in 5 minutes · Free plan included</div>
+
+        <div class="product-preview">
+          <div class="browser">
+            <div class="browserbar"><i></i><i></i><i></i></div>
+            <div class="preview-ui">
+              <aside class="side">
+                <div class="side-title">Contextly</div>
+                <div class="side-item active" data-i18n="overview">Overview</div>
+                <div class="side-item" data-i18n="knowledge">Knowledge</div>
+                <div class="side-item" data-i18n="chatbot">Chatbot</div>
+                <div class="side-item" data-i18n="embed">Embed</div>
+                <div class="side-item" data-i18n="analytics">Analytics</div>
+              </aside>
+              <div class="chat">
+                <div class="chat-top" data-i18n="previewChatTop">Maria’s support assistant</div>
+                <div class="msg bot" data-i18n="previewBot1">Hi! I’m Maria’s AI assistant, trained on Acme’s docs. How
+                  can I help?</div>
+                <div class="msg user" data-i18n="previewUser1">What is your refund policy?</div>
+                <div class="msg bot" data-i18n="previewBot2">You can request a refund within 30 days of purchase. I can
+                  also show you the exact policy.</div>
+                <div class="composer" data-i18n="previewComposer">Ask anything about Acme…</div>
+              </div>
+              <aside class="inspector">
+                <h4 data-i18n="knowledgeBase">KNOWLEDGE BASE</h4>
+                <div class="stat"><strong>24</strong><span data-i18n="sourcesIndexed">Sources indexed</span></div>
+                <div class="stat"><strong>98.4%</strong><span data-i18n="answerConfidence">Answer confidence</span>
+                </div>
+                <div class="stat"><strong>1,248</strong><span data-i18n="questionsAnswered">Questions answered</span>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="product" class="section">
+        <div class="section-head reveal"><span class="eyebrow" data-i18n="calmWorkspace">One calm workspace</span>
+          <h2 data-i18n="productTitle">Everything between “we have docs” and “the bot works.”</h2>
+          <p data-i18n="productText">Upload knowledge, test answers, customize the experience, then paste one tiny
+            snippet into your website.</p>
+        </div>
+        <div class="grid3">
+          <div class="card reveal reveal-delay-1">
+            <div class="icon">01</div>
+            <h3 data-i18n="card1Title">Teach it your business</h3>
+            <p data-i18n="card1Text">Drop in PDFs, help articles, FAQs and product docs. Contextly keeps the source
+              material organized and searchable.</p>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="icon">02</div>
+            <h3 data-i18n="card2Title">Test before launch</h3>
+            <p data-i18n="card2Text">Chat with your assistant in a private sandbox. Catch weak answers before your
+              customers ever see them.</p>
+          </div>
+          <div class="card reveal reveal-delay-3">
+            <div class="icon">03</div>
+            <h3 data-i18n="card3Title">Ship it anywhere</h3>
+            <p data-i18n="card3Text">Choose the look, copy the embed code and add your assistant to any website without
+              changing your stack.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="how" class="section">
+        <div class="section-head reveal"><span class="eyebrow" data-i18n="fromUpload">From upload to live</span>
+          <h2 data-i18n="howTitle">A tiny setup. A big reduction in support noise.</h2>
+        </div>
+        <div class="steps">
+          <div class="step reveal reveal-delay-1"><span class="step-num" data-i18n="step1Num">01 / CONNECT</span>
+            <h3 data-i18n="step1Title">Bring your knowledge.</h3>
+            <p data-i18n="step1Text">Upload the sources your team already trusts. No complicated training pipeline.</p>
+          </div>
+          <div class="step reveal reveal-delay-2"><span class="step-num" data-i18n="step2Num">02 / SHAPE</span>
+            <h3 data-i18n="step2Title">Give it a personality.</h3>
+            <p data-i18n="step2Text">Set the name, welcome message, tone and fallback behavior so it feels like your
+              product.</p>
+          </div>
+          <div class="step reveal reveal-delay-3"><span class="step-num" data-i18n="step3Num">03 / LAUNCH</span>
+            <h3 data-i18n="step3Title">Paste. Publish. Done.</h3>
+            <p data-i18n="step3Text">Copy one line of embed code. Your assistant appears as a polished floating widget.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" class="section">
+        <div class="section-head reveal"><span class="eyebrow" data-i18n="simplePricing">Simple pricing</span>
+          <h2 data-i18n="pricingTitle">Start small. Upgrade when the questions do.</h2>
+        </div>
+        <div class="pricing">
+          <div class="price reveal reveal-delay-1">
+            <h3 data-i18n="planStarter">Starter</h3>
+            <div class="amount">$0</div>
+            <div class="period" data-i18n="periodForever">forever</div>
+            <div class="features"><span data-i18n="f1a">1 chatbot</span><span data-i18n="f1b">50 sources</span><span
+                data-i18n="f1c">100 conversations / month</span><span data-i18n="f1d">Contextly branding</span><br>
+            </div>
+            <button class="btn btn-light" style="width:100%" data-i18n="getStarted" onclick="openApp()">Get
+              started</button>
+          </div>
+          <div class="price featured reveal reveal-delay-2"><span class="badge" data-i18n="mostPopular">MOST
+              POPULAR</span>
+            <h3 data-i18n="planPro">Pro</h3>
+            <div class="amount">$29</div>
+            <div class="period" data-i18n="periodMonth">per month</div>
+            <div class="features"><span data-i18n="f2a">5 chatbots</span><span data-i18n="f2b">Unlimited
+                sources</span><span data-i18n="f2c">5,000 conversations / month</span><span data-i18n="f2d">Remove
+                branding</span><span data-i18n="f2e">Custom widget styling</span></div><button class="btn btn-purple"
+              style="width:100%" data-i18n="startPro" onclick="openPaywall()">Start Pro</button>
+          </div>
+          <div class="price reveal reveal-delay-3">
+            <h3 data-i18n="planScale">Scale</h3>
+            <div class="amount">$99</div>
+            <div class="period" data-i18n="periodMonth">per month</div>
+            <div class="features"><span data-i18n="f3a">Unlimited chatbots</span><span data-i18n="f3b">25,000
+                conversations</span><span data-i18n="f3c">Team workspace</span><span data-i18n="f3d">Analytics &
+                exports</span><span data-i18n="f3e">Priority support</span></div><button class="btn btn-light"
+              style="width:100%" data-i18n="talkSales" onclick="openPaywall()">Talk to sales</button>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="container" style="width:100%;display:flex;justify-content:space-between"><span>© 2026
+            Contextly</span><span data-i18n="footerTagline">Knowledge in. Answers out.</span></div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <div class="app-shell">
+      <aside class="app-sidebar">
+        <div class="app-logo" onclick="goHome()" title="Back to Contextly home">
+          <div class="logo"><span class="logo-mark">C</span>contextly</div>
+        </div>
+        <div class="workspace">Acme Inc. <span style="float:right">⌄</span></div>
+        <div class="app-nav">
+          <button class="active" data-page="overview" onclick="showPage('overview',this)">⌂ &nbsp; <span
+              data-i18n="overview">Overview</span></button>
+          <button data-page="knowledge" onclick="showPage('knowledge',this)">▣ &nbsp; <span
+              data-i18n="knowledge">Knowledge</span></button>
+          <button data-page="chatbot" onclick="showPage('chatbot',this)">◌ &nbsp; <span
+              data-i18n="chatbot">Chatbot</span></button>
+          <button data-page="embed" onclick="showPage('embed',this)">↗ &nbsp; <span
+              data-i18n="embed">Embed</span></button>
+          <button data-page="analytics" onclick="showPage('analytics',this)">⌁ &nbsp; <span
+              data-i18n="analytics">Analytics</span></button>
+        </div>
+        <div class="app-bottom"><span data-i18n="proWorkspace">Pro workspace</span><br><span style="color:#fff"
+            data-i18n="sourcesUsed">24 / 50 sources used</span></div>
+      </aside>
+      <main class="app-main">
+        <header class="app-top">
+          <div class="crumb">Acme Inc. / <b id="crumb" data-i18n="overview">Overview</b></div>
+          <div class="app-top-actions">
+            <div class="lang-switch" aria-label="Language">
+              <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+              <span></span>
+              <button class="lang-btn" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+            </div>
+            <div class="avatar">MA</div>
+          </div>
+        </header>
+        <div id="page-overview" class="page">
+          <h2 data-i18n="goodEvening">Good evening, Maria.</h2>
+          <div class="page-sub" data-i18n="overviewSub">Your assistant is getting smarter. Here’s what’s happening. ✦
+            Maria’s workspace</div>
+          <div class="app-grid">
+            <div class="panel">
+              <div class="panel-title">
+                <h3 data-i18n="knowledgeBaseTitle">Knowledge base</h3><button class="btn btn-light"
+                  style="padding:8px 11px;font-size:11px" data-i18n="manage"
+                  onclick="showPage('knowledge')">Manage</button>
+              </div>
+              <div class="upload" onclick="simulateUpload()">
+                <div class="upload-icon">↑</div><strong data-i18n="dropFiles">Drop files here or browse</strong><small
+                  data-i18n="fileTypes">PDF, DOCX, TXT up to 25 MB</small>
+              </div>
+              <div class="docs">
+                <div class="doc">
+                  <div class="doc-icon">PDF</div>
+                  <div><span>Product handbook.pdf</span><small data-i18n="indexed24">Indexed · 2.4 MB</small></div>
+                </div>
+                <div class="doc">
+                  <div class="doc-icon">TXT</div>
+                  <div><span>FAQ & policies.txt</span><small data-i18n="indexed84">Indexed · 84 KB</small></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-title">
+                <h3 data-i18n="livePreview">Live preview</h3><span style="font-size:10px;color:#45a571"
+                  data-i18n="online">● Online</span>
+              </div>
+              <div class="preview-chat">
+                <div class="chat-head">
+                  <div class="bot-avatar">C</div>
+                  <div><strong>Acme Assistant</strong>
+                    <div class="online" data-i18n="poweredBy">Powered by your knowledge</div>
+                  </div>
+                </div>
+                <div class="chat-body">
+                  <div class="bubble bot" data-i18n="ovBot1">Hi! Ask me anything about Acme.</div>
+                  <div class="bubble me" data-i18n="ovUser1">Can I cancel anytime?</div>
+                  <div class="bubble bot" data-i18n="ovBot2">Yes. You can cancel from your account settings at any time.
+                  </div>
+                </div>
+                <div class="chat-input" data-i18n="askQuestion">Ask a question…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="page-knowledge" class="page hidden">
+          <h2 data-i18n="knowledge">Knowledge</h2>
+          <div class="page-sub" data-i18n="knowledgeSub">The sources your assistant uses to answer customers.</div>
+          <div class="panel">
+            <div class="panel-title">
+              <h3><span data-i18n="sources">Sources</span> <span style="color:#999;font-weight:400"
+                  data-i18n="sourcesTotal">24 total</span></h3><button class="btn btn-dark"
+                style="padding:9px 13px;font-size:11px" data-i18n="addSource" onclick="simulateUpload()">+ Add
+                source</button>
+            </div>
+            <div class="upload" onclick="simulateUpload()">
+              <div class="upload-icon">＋</div><strong data-i18n="addDocs">Add documents to your knowledge
+                base</strong><small data-i18n="dragDrop">Drag & drop or click to upload</small>
+            </div>
+            <div class="docs">
+              <div class="doc">
+                <div class="doc-icon">PDF</div>
+                <div><span>Product handbook.pdf</span><small data-i18n="indexed2min">Indexed 2 minutes ago · 2.4
+                    MB</small></div>
+              </div>
+              <div class="doc">
+                <div class="doc-icon">PDF</div>
+                <div><span>Pricing & plans.pdf</span><small data-i18n="indexedToday">Indexed today · 1.1 MB</small>
+                </div>
+              </div>
+              <div class="doc">
+                <div class="doc-icon">URL</div>
+                <div><span>acme.com/help</span><small data-i18n="syncedToday">Synced today · 38 pages</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="page-chatbot" class="page hidden">
+          <h2 data-i18n="chatbot">Chatbot</h2>
+          <div class="page-sub" data-i18n="chatbotSub">Test exactly what your customers will experience.</div>
+          <div class="smart-bot-shell">
+            <aside class="bot-list-panel">
+              <div class="bot-list-title" data-i18n="myBots">Мои боты</div>
+              <button class="bot-list-item active" data-bot="support" onclick="switchBot('support',this)">
+                <span class="bot-dot"></span> Support Bot
+              </button>
+              <button class="bot-list-item" data-bot="sales" onclick="switchBot('sales',this)">
+                <span class="bot-dot"></span> Sales Bot
+              </button>
+              <div class="bot-list-footer">
+                <button class="bot-upload-btn" onclick="document.getElementById('botFileInput').click()">
+                  <span>📎</span> <span data-i18n="uploadDoc">Загрузить документ</span>
+                </button>
+                <button class="bot-upload-btn secondary" onclick="document.getElementById('botFileInput').click()">
+                  <span>+</span> <span data-i18n="chooseFile">Выбрать файл</span>
+                </button>
+                <input type="file" id="botFileInput" accept=".pdf,.txt,.doc,.docx,.md,.csv" multiple hidden
+                  onchange="handleBotFiles(event)">
+              </div>
+            </aside>
+            <div class="bot-chat-panel">
+              <div class="bot-chat-messages" id="botChatMessages"></div>
+              <div class="bot-chat-composer">
+                <input type="text" id="botChatInput" data-i18n-placeholder="chatPlaceholder"
+                  placeholder="Напишите сообщение…" autocomplete="off"
+                  onkeydown="if(event.key==='Enter')sendBotMessage()">
+                <button class="btn btn-purple bot-send" onclick="sendBotMessage()" data-i18n="send">Отправить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="page-embed" class="page hidden">
+          <h2 data-i18n="embed">Embed</h2>
+          <div class="page-sub" data-i18n="embedSub">Customize the widget, then copy the code into your website.</div>
+          <div class="tabs"><button class="tab active" data-i18n="tabAppearance">Appearance</button><button class="tab"
+              data-i18n="tabBehavior">Behavior</button><button class="tab" data-i18n="tabAdvanced">Advanced</button>
+          </div>
+          <div class="app-grid">
+            <div class="panel">
+              <div class="panel-title">
+                <h3 data-i18n="widgetSettings">Widget settings</h3>
+              </div><label style="font-size:11px;color:#777" data-i18n="assistantName">Assistant name</label><input
+                value="Acme Assistant"
+                style="width:100%;margin:7px 0 16px;padding:11px;border:1px solid var(--line);border-radius:9px"><label
+                style="font-size:11px;color:#777" data-i18n="welcomeMessage">Welcome message</label><input
+                id="welcomeInput" value="Hi! How can I help?"
+                style="width:100%;margin:7px 0 16px;padding:11px;border:1px solid var(--line);border-radius:9px">
+              <div
+                style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line);font-size:12px">
+                <span data-i18n="showBadge">Show Contextly badge</span> <span class="toggle"><i></i></span>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-title">
+                <h3 data-i18n="installCode">Install code</h3><button class="btn btn-light"
+                  style="padding:7px 10px;font-size:10px" data-i18n="copy" onclick="copyCode()">Copy</button>
+              </div>
+              <div id="code" class="codebox">&lt;script&gt;
+                window.contextly = {
+                bot: "acme-assistant",
+                position: "bottom-right"
+                };
+                &lt;/script&gt;
+                &lt;script src="https://cdn.contextly.ai/widget.js"
+                async&gt;&lt;/script&gt;</div>
+              <div style="font-size:10px;color:#999;margin-top:10px" data-i18n="pasteBody">Paste before the closing
+                &lt;/body&gt; tag.</div>
+            </div>
+          </div>
+        </div>
+        <div id="page-analytics" class="page hidden">
+          <h2 data-i18n="analytics">Analytics</h2>
+          <div class="page-sub" data-i18n="analyticsSub">See what your customers ask when nobody is watching.</div>
+          <div class="grid3">
+            <div class="card">
+              <div class="icon">↗</div>
+              <h3>1,248</h3>
+              <p data-i18n="convMonth">Conversations this month</p>
+            </div>
+            <div class="card">
+              <div class="icon">✓</div>
+              <h3>94%</h3>
+              <p data-i18n="qSuccess">Questions answered successfully</p>
+            </div>
+            <div class="card">
+              <div class="icon">◷</div>
+              <h3>18s</h3>
+              <p data-i18n="avgTime">Average time to first answer</p>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:16px">
+            <div class="panel-title">
+              <h3 data-i18n="topQuestions">Top questions</h3><span style="font-size:10px;color:#999"
+                data-i18n="last30">Last 30 days</span>
+            </div>
+            <div style="display:grid;gap:13px;font-size:12px">
+              <div>01 &nbsp; <span data-i18n="q1">What is your refund policy?</span> <span
+                  style="float:right;color:#999">184</span></div>
+              <div>02 &nbsp; <span data-i18n="q2">How long does shipping take?</span> <span
+                  style="float:right;color:#999">143</span></div>
+              <div>03 &nbsp; <span data-i18n="q3">Can I change my plan?</span> <span
+                  style="float:right;color:#999">97</span></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="paywall" class="paywall hidden">
+    <div class="modal">
+      <div class="modal-top">
+        <div>
+          <h2 data-i18n="paywallTitle">Give your chatbot more room.</h2>
+          <p data-i18n="paywallText">You’ve reached the Starter limits. Upgrade to keep building.</p>
+        </div><button class="close" onclick="closePaywall()">×</button>
+      </div>
+      <div class="modal-prices">
+        <div class="modal-price"><b data-i18n="planStarter">Starter</b><strong>$0</strong><span
+            data-i18n="mChats100">100 chats / month</span><button class="btn btn-light"
+            data-i18n="current">Current</button></div>
+        <div class="modal-price active"><b data-i18n="planPro">Pro</b><strong>$29</strong><span
+            data-i18n="mChats5k">5,000 chats / month</span><button class="btn btn-purple" data-i18n="upgrade"
+            onclick="activatePro()">Upgrade</button></div>
+        <div class="modal-price"><b data-i18n="planScale">Scale</b><strong>$99</strong><span
+            data-i18n="mChats25k">25,000 chats / month</span><button class="btn btn-light"
+            data-i18n="contactSales">Contact sales</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="loginModal" class="paywall hidden">
+    <div class="modal login-modal">
+      <div class="modal-top">
+        <div>
+          <h2 data-i18n="loginTitle">Welcome back</h2>
+          <p data-i18n="loginText">Sign in to your Contextly workspace.</p>
+        </div>
+        <button class="close" onclick="closeLogin()">×</button>
+      </div>
+      <form class="login-form" onsubmit="return submitLogin(event)">
+        <label data-i18n="emailLabel">Email</label>
+        <input type="email" id="loginEmail" required placeholder="you@company.com" autocomplete="email">
+        <label data-i18n="passwordLabel">Password</label>
+        <input type="password" id="loginPassword" required placeholder="••••••••" autocomplete="current-password"
+          minlength="4">
+        <button type="submit" class="btn btn-purple" style="width:100%;margin-top:8px" data-i18n="loginSubmit">Sign
+          in</button>
+        <p class="login-hint" data-i18n="loginHint">Demo: any email and password (min 4 characters).</p>
+        <button type="button" class="login-switch" onclick="closeLogin();openApp()" data-i18n="noAccount">No account?
+          Start building free →</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    function openApp() {
+      document.getElementById('landing').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('loginModal')?.classList.add('hidden');
+      window.scrollTo(0, 0);
+    }
+    function openLogin() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('loginEmail')?.focus(), 80);
+    }
+    function closeLogin() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+    function submitLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail')?.value.trim();
+      const pass = document.getElementById('loginPassword')?.value || "";
+      if (!email || pass.length < 4) return false;
+      const lang = localStorage.getItem("contextly-language") || "en";
+      const name = email.split("@")[0];
+      // personalize greeting
+      const greet = document.querySelector('[data-i18n="goodEvening"]');
+      if (greet) {
+        greet.textContent = lang === "ru"
+          ? `С возвращением, ${name}.`
+          : `Welcome back, ${name}.`;
+      }
+      closeLogin();
+      openApp();
+      toast(lang === "ru" ? `Вы вошли как ${email}` : `Signed in as ${email}`);
+      return false;
+    }
+    function goHome() {
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('landing').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function showPage(name, btn) {
+      const pages = document.querySelectorAll('[id^="page-"]');
+      const next = document.getElementById('page-' + name);
+      if (!next) return;
+      const current = [...pages].find(p => !p.classList.contains('hidden'));
+      if (current === next) return;
+
+      document.querySelectorAll('.app-nav button').forEach(x => x.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      else {
+        const navBtn = document.querySelector(`.app-nav button[data-page="${name}"]`);
+        if (navBtn) navBtn.classList.add('active');
+      }
+      const lang = localStorage.getItem("contextly-language") || "en";
+      document.getElementById('crumb').textContent = I18N[lang]?.[name] || name.charAt(0).toUpperCase() + name.slice(1);
+
+      // smooth fade between app pages
+      if (current) {
+        current.classList.add('page-exit');
+        setTimeout(() => {
+          current.classList.add('hidden');
+          current.classList.remove('page-exit');
+          next.classList.remove('hidden');
+          next.classList.add('page-enter');
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => next.classList.remove('page-enter'));
+          });
+          // soft scroll app main to top
+          const main = document.querySelector('.app-main');
+          if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+          else window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (name === "chatbot") initBotChat();
+        }, 180);
+      } else {
+        pages.forEach(x => x.classList.add('hidden'));
+        next.classList.remove('hidden');
+        next.classList.add('page-enter');
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => next.classList.remove('page-enter'));
+        });
+        if (name === "chatbot") initBotChat();
+      }
+    }
+    function openPaywall() { document.getElementById('paywall').classList.remove('hidden') }
+    function closePaywall() { document.getElementById('paywall').classList.add('hidden') }
+    function activatePro() { const lang = localStorage.getItem("contextly-language") || "en"; closePaywall(); toast((I18N[lang] || I18N.en).toastPro) }
+    function toast(t) { let x = document.getElementById('toast'); x.textContent = t; x.classList.add('show'); setTimeout(() => x.classList.remove('show'), 2200) }
+    function simulateUpload() { document.getElementById('botFileInput')?.click() || toast((I18N[localStorage.getItem("contextly-language") || "en"] || I18N.en).toastUpload) }
+    function copyCode() { const lang = localStorage.getItem("contextly-language") || "en"; navigator.clipboard?.writeText(document.getElementById('code').innerText); toast((I18N[lang] || I18N.en).toastCopy) }
+
+    /* ========== SMART BOT ENGINE ========== */
+    const BotState = {
+      current: "support",
+      knowledge: {
+        support: [{ name: "FAQ & policies.txt", text: "Refund policy: customers can request a refund within 30 days of purchase. Shipping: standard 3-5 business days, express 1-2 business days. Cancel anytime from account settings. Support email: help@acme.com. Working hours: Mon-Fri 9:00-18:00." }],
+        sales: []
+      },
+      history: { support: [], sales: [] }
+    };
+
+    function t(key) {
+      const lang = localStorage.getItem("contextly-language") || "en";
+      return (I18N[lang] || I18N.en)[key] || key;
+    }
+
+    function botName() {
+      return BotState.current === "sales" ? "Sales Bot" : "Support Bot";
+    }
+
+    function appendBotMsg(html, cls) {
+      const box = document.getElementById("botChatMessages");
+      if (!box) return;
+      const div = document.createElement("div");
+      div.className = "bot-msg " + cls;
+      div.innerHTML = html;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      return div;
+    }
+
+    function showTyping(labelText) {
+      const box = document.getElementById("botChatMessages");
+      if (!box) return null;
+      const ru = localStorage.getItem("contextly-language") === "ru";
+      const div = document.createElement("div");
+      div.className = "bot-typing";
+      div.id = "botTyping";
+      div.innerHTML = `<i></i><i></i><i></i><span class="bot-typing-label">${labelText || (ru ? "печатает…" : "typing…")}</span>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+      return div;
+    }
+    function hideTyping() { document.getElementById("botTyping")?.remove(); }
+
+    function renderQuickReplies(chips) {
+      if (!chips || !chips.length) return;
+      const box = document.getElementById("botChatMessages");
+      if (!box) return;
+      const wrap = document.createElement("div");
+      wrap.className = "bot-quick-replies";
+      chips.forEach(c => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "bot-chip";
+        b.textContent = c;
+        b.onclick = () => {
+          const input = document.getElementById("botChatInput");
+          if (input) { input.value = c; sendBotMessage(); }
+        };
+        wrap.appendChild(b);
+      });
+      box.appendChild(wrap);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function spawnSparkles(x, y, count) {
+      count = count || 14;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement("div");
+        el.className = "sparkle-particle";
+        const size = 4 + Math.random() * 5;
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 40 + Math.random() * 70;
+        el.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+        el.style.setProperty("--dy", Math.sin(angle) * dist + "px");
+        el.style.animationDelay = (Math.random() * 0.12) + "s";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1100);
+      }
+    }
+
+    function initBotChat() {
+      const box = document.getElementById("botChatMessages");
+      if (!box) return;
+      box.innerHTML = "";
+      const name = botName();
+      const docs = BotState.knowledge[BotState.current] || [];
+      const greeting = BotState.current === "sales"
+        ? (localStorage.getItem("contextly-language") === "ru"
+          ? `👋 Привет! Я — бот <b>${name}</b>. Задайте мне вопрос, и я отвечу на основе загруженных документов.`
+          : `👋 Hi! I'm <b>${name}</b>. Ask me a question and I'll answer based on uploaded documents.`)
+        : (localStorage.getItem("contextly-language") === "ru"
+          ? `👋 Привет! Я — бот <b>${name}</b>. Задайте мне вопрос, и я отвечу на основе загруженных документов.`
+          : `👋 Hi! I'm <b>${name}</b>. Ask me a question and I'll answer based on uploaded documents.`);
+      appendBotMsg(greeting, "bot");
+      if (docs.length) {
+        const list = docs.map(d => d.name).join(", ");
+        appendBotMsg(
+          localStorage.getItem("contextly-language") === "ru"
+            ? `📚 В базе знаний: <b>${list}</b>`
+            : `📚 Knowledge base: <b>${list}</b>`,
+          "system"
+        );
+      }
+    }
+
+    function switchBot(id, btn) {
+      BotState.current = id;
+      document.querySelectorAll(".bot-list-item").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      initBotChat();
+    }
+
+    async function handleBotFiles(event) {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+      // ensure chatbot page visible
+      showPage("chatbot", document.querySelector('[data-page="chatbot"]'));
+      for (const file of files) {
+        await processBotFile(file);
+      }
+      event.target.value = "";
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    }
+
+    async function readFileText(file) {
+      const name = file.name.toLowerCase();
+      if (name.endsWith(".txt") || name.endsWith(".md") || name.endsWith(".csv") || name.endsWith(".json")) {
+        return await file.text();
+      }
+      // PDF/DOCX — browser can't parse easily without libs; store meta + filename hints
+      return `[Document: ${file.name}]\nThis is a binary document uploaded by the user. Filename suggests topic: ${file.name.replace(/[_\-\.]/g, " ")}. Answer questions related to this document based on its title and general knowledge of such documents.`;
+    }
+
+    async function processBotFile(file) {
+      const ru = localStorage.getItem("contextly-language") === "ru";
+      const size = formatSize(file.size);
+      appendBotMsg(
+        `<span class="msg-icon">📄</span> ${ru ? `Файл` : `File`} "<b>${file.name}</b>" ${ru ? `загружен` : `uploaded`} (${size}).<br>${ru ? `Начинаю обучение модели…` : `Starting model training…`}`,
+        "file"
+      );
+      showTyping();
+      const text = await readFileText(file);
+      await new Promise(r => setTimeout(r, 900 + Math.random() * 800));
+      hideTyping();
+      BotState.knowledge[BotState.current].push({ name: file.name, text });
+      const successEl = appendBotMsg(
+        `<span class="msg-icon">✅</span> ${ru ? `Обучение завершено! Теперь я знаю содержимое` : `Training complete! I now know the contents of`} "<b>${file.name}</b>". ${ru ? `Задавайте вопросы.` : `Ask me questions.`}`,
+        "system"
+      );
+      if (successEl) {
+        const r = successEl.getBoundingClientRect();
+        spawnSparkles(r.left + 22, r.top + 16);
+      }
+      toast(ru ? `Источник «${file.name}» проиндексирован` : `Source "${file.name}" indexed`);
+      // also reflect in knowledge page docs list if present
+      addDocToKnowledgeUI(file.name, size);
+    }
+
+    function addDocToKnowledgeUI(name, size) {
+      document.querySelectorAll(".docs").forEach(list => {
+        const el = document.createElement("div");
+        el.className = "doc";
+        const ext = (name.split(".").pop() || "FILE").toUpperCase().slice(0, 4);
+        el.innerHTML = `<div class="doc-icon">${ext}</div><div><span>${name}</span><small>${localStorage.getItem("contextly-language") === "ru" ? "Проиндексирован только что" : "Indexed just now"} · ${size}</small></div>`;
+        list.prepend(el);
+      });
+    }
+
+    function sendBotMessage() {
+      const input = document.getElementById("botChatInput");
+      if (!input) return;
+      const q = input.value.trim();
+      if (!q) return;
+      input.value = "";
+      const sendBtn = document.querySelector(".bot-send");
+      sendBtn?.classList.add("sending");
+      appendBotMsg(escapeHtml(q), "user");
+      const ru = localStorage.getItem("contextly-language") === "ru";
+      const docs = BotState.knowledge[BotState.current] || [];
+      const label = docs.length ? (ru ? "анализирую базу знаний…" : "analyzing knowledge base…") : (ru ? "печатает…" : "typing…");
+      showTyping(label);
+      const delay = 550 + Math.min(q.length * 16, 850) + Math.random() * 400;
+      setTimeout(() => {
+        hideTyping();
+        sendBtn?.classList.remove("sending");
+        const { answer, chips } = generateBotAnswer(q);
+        appendBotMsg(answer, "bot");
+        if (chips) renderQuickReplies(chips);
+      }, delay);
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    const RESPONSE_BANK = {
+      en: {
+        greeting: [
+          "Hey there! 👋 Great to see you. What would you like to know?",
+          "Hello! I'm here and ready to help — ask me anything.",
+          "Hi! 😊 What can I help you find today?"
+        ],
+        thanks: [
+          "You're very welcome! Anything else I can help with?",
+          "Happy to help! Let me know if you need anything else.",
+          "Glad that helped — feel free to ask more questions."
+        ],
+        bye: [
+          "Take care! Come back anytime you have a question. 👋",
+          "Bye for now — I'll be right here if you need me again.",
+          "See you soon! Have a great day."
+        ],
+        howAreYou: [
+          "I'm running smoothly and ready to help! How can I assist you?",
+          "All good on my end — just waiting to answer your questions!"
+        ],
+        capabilities: [
+          "I answer questions using the documents your team uploaded — policies, guides, FAQs, anything you give me. I can also hand off to a human when needed.",
+          "I'm trained on your knowledge base. Ask me about policies, product details, or anything in your uploaded docs, and I'll do my best to answer instantly."
+        ],
+        pricing: [
+          "Pricing usually lives in your knowledge base, but generally: Starter is free, Pro is $29/mo, and Scale is $99/mo. Want me to check your uploaded docs for specifics?"
+        ],
+        human: [
+          "I can loop in a teammate for you — in the live product this opens a handoff to a human agent, with full chat history included."
+        ],
+        noDocs: [
+          "I don't have any uploaded documents yet. Click “Upload document” on the left so I can answer from your files.",
+          "My knowledge base is empty right now — add a document and I'll start answering based on it."
+        ],
+        notFound: [
+          "I've studied: <b>{names}</b>. I couldn't find an exact answer for “{q}”. Try rephrasing or upload more files.",
+          "I looked through <b>{names}</b> but nothing matched closely. Could you rephrase, or add more detail?",
+          "I checked <b>{names}</b> and didn't find a confident answer. Want to try a different question, or upload another source?"
+        ],
+        found: [
+          "Great question! Based on <b>{name}</b>, here's what I found:<br><br>{snippet}",
+          "Here's what <b>{name}</b> says about that:<br><br>{snippet}",
+          "According to <b>{name}</b>:<br><br>{snippet}"
+        ]
+      },
+      ru: {
+        greeting: [
+          "Привет! 👋 Рад видеть. Что хотите узнать?",
+          "Здравствуйте! Готов помочь — задавайте любой вопрос.",
+          "Привет! 😊 Чем могу помочь сегодня?"
+        ],
+        thanks: [
+          "Всегда пожалуйста! Ещё чем-нибудь помочь?",
+          "Рад помочь! Обращайтесь, если будут ещё вопросы.",
+          "Пожалуйста! Если что — я тут."
+        ],
+        bye: [
+          "Хорошего дня! Возвращайтесь, если появятся вопросы. 👋",
+          "До связи! Я всегда на месте, если понадоблюсь.",
+          "Пока! Заходите ещё."
+        ],
+        howAreYou: [
+          "У меня всё отлично, готов помогать! Чем могу быть полезен?",
+          "Всё работает как надо — жду ваших вопросов!"
+        ],
+        capabilities: [
+          "Я отвечаю на вопросы, используя документы, которые загрузила ваша команда — политики, инструкции, FAQ, всё, что вы мне дадите. Также умею передавать сложные вопросы человеку.",
+          "Я обучен на вашей базе знаний. Спрашивайте о политиках, продукте или содержимом загруженных файлов — отвечу мгновенно."
+        ],
+        pricing: [
+          "Обычно цены есть в базе знаний, но в целом: Starter — бесплатно, Pro — $29/мес, Scale — $99/мес. Проверить по вашим документам?"
+        ],
+        human: [
+          "Могу подключить коллегу — в реальном продукте это откроет передачу оператору вместе с историей переписки."
+        ],
+        noDocs: [
+          "Пока у меня нет загруженных документов. Нажмите «Загрузить документ» слева, чтобы я мог отвечать на основе ваших файлов.",
+          "База знаний пока пуста — загрузите документ, и я начну отвечать на его основе."
+        ],
+        notFound: [
+          "Я изучил документы: <b>{names}</b>. Не нашёл точного ответа на «{q}». Уточните вопрос или загрузите дополнительные файлы.",
+          "Просмотрел <b>{names}</b>, но точного совпадения не нашёл. Попробуйте переформулировать или добавить деталей.",
+          "Проверил <b>{names}</b> — уверенного ответа нет. Хотите задать вопрос иначе или загрузить ещё один файл?"
+        ],
+        found: [
+          "Отличный вопрос! Согласно <b>{name}</b>, вот что я нашёл:<br><br>{snippet}",
+          "Вот что говорит <b>{name}</b> по этому поводу:<br><br>{snippet}",
+          "Согласно <b>{name}</b>:<br><br>{snippet}"
+        ]
+      }
+    };
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function generateBotAnswer(question) {
+      const ru = localStorage.getItem("contextly-language") === "ru";
+      const bank = ru ? RESPONSE_BANK.ru : RESPONSE_BANK.en;
+      const docs = BotState.knowledge[BotState.current] || [];
+      const q = question.toLowerCase().trim();
+
+      // small talk & general intents — answered before touching the knowledge base
+      if (/^(hi|hello|hey|yo|sup)\b/.test(q) || /^(привет|здравств|добрый день|доброе утро|здарова)/.test(q)) {
+        return { answer: pick(bank.greeting), chips: ru ? ["Что ты умеешь?", "Тарифы", "Поговорить с человеком"] : ["What can you do?", "Pricing", "Talk to a human"] };
+      }
+      if (/thank|thx|спасибо|благодар/.test(q)) {
+        return { answer: pick(bank.thanks) };
+      }
+      if (/\b(bye|goodbye|see you)\b/.test(q) || /пока|до свидан/.test(q)) {
+        return { answer: pick(bank.bye) };
+      }
+      if (/how are you|как дела|как ты/.test(q)) {
+        return { answer: pick(bank.howAreYou) };
+      }
+      if (/what can you do|what do you do|что ты умеешь|что можешь|возможност/.test(q)) {
+        return { answer: pick(bank.capabilities), chips: ru ? ["Тарифы", "Загрузить документ"] : ["Pricing", "Upload a document"] };
+      }
+      if (/\b(price|pricing|cost|plan)\b/.test(q) || /цена|стоимост|тариф/.test(q)) {
+        return { answer: pick(bank.pricing), chips: ru ? ["Поговорить с человеком"] : ["Talk to a human"] };
+      }
+      if (/human|agent|real person|оператор|человек|живой чат/.test(q)) {
+        return { answer: pick(bank.human) };
+      }
+
+      if (!docs.length) {
+        return { answer: pick(bank.noDocs) };
+      }
+
+      // keyword search across knowledge
+      const words = q.replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter(w => w.length > 2);
+      let best = null, bestScore = 0;
+      for (const doc of docs) {
+        const text = doc.text.toLowerCase();
+        let score = 0;
+        for (const w of words) {
+          if (text.includes(w)) score += 1;
+        }
+        if (q.includes("дат") || q.includes("date")) {
+          const dateMatch = doc.text.match(/\d{1,2}[./]\d{1,2}[./]\d{2,4}|\d{4}-\d{2}-\d{2}|30 days|3–5|1–2|Mon-Fri|9:00/i);
+          if (dateMatch) score += 3;
+        }
+        if (q.includes("возврат") || q.includes("refund")) { if (/refund|возврат/i.test(doc.text)) score += 3; }
+        if (q.includes("достав") || q.includes("ship")) { if (/ship|достав/i.test(doc.text)) score += 3; }
+        if (q.includes("отмен") || q.includes("cancel")) { if (/cancel|отмен/i.test(doc.text)) score += 3; }
+        if (score > bestScore) { bestScore = score; best = doc; }
+      }
+
+      if (best && bestScore > 0) {
+        // extract relevant sentences
+        const sentences = best.text.split(/(?<=[.!?…])\s+/);
+        const relevant = sentences.filter(s => {
+          const sl = s.toLowerCase();
+          return words.some(w => sl.includes(w)) || /refund|ship|cancel|date|возврат|достав|отмен|дат|срок|политик/i.test(s);
+        }).slice(0, 3);
+        const snippet = escapeHtml((relevant.length ? relevant.join(" ") : best.text.slice(0, 280)).trim());
+        const answer = pick(bank.found).replace("{name}", best.name).replace("{snippet}", snippet);
+        return { answer, chips: ru ? ["Есть ещё вопрос", "Поговорить с человеком"] : ["I have another question", "Talk to a human"] };
+      }
+
+      // fallback: list docs + invite, with varied phrasing
+      const names = docs.map(d => d.name).join(", ");
+      const answer = pick(bank.notFound).replace("{names}", names).replace("{q}", escapeHtml(question));
+      return { answer, chips: ru ? ["Загрузить ещё документ", "Поговорить с человеком"] : ["Upload another document", "Talk to a human"] };
+    }
+
+    // wire knowledge-page uploads to real file picker
+    document.addEventListener("click", e => {
+      const up = e.target.closest(".upload");
+      if (up) { e.preventDefault(); document.getElementById("botFileInput")?.click(); }
+    });
+
+
+    const I18N = {
+      en: {
+        pageTitle: "Contextly — Build a chatbot from your knowledge",
+        login: "Log in", startBuilding: "Start building", productNav: "Product", howNav: "How it works", pricingNav: "Pricing",
+        eyebrow: "Your knowledge, finally useful", heroTitle: "Turn company docs into a chatbot people actually want to use.",
+        heroText: "Contextly learns from your website, PDFs, help center and internal docs — then gives your customers instant, accurate answers.",
+        buildChatbot: "Build my chatbot →", seeHow: "See how it works", miniNote: "No credit card · Set up in 5 minutes · Free plan included",
+        calmWorkspace: "One calm workspace", productTitle: "Everything between “we have docs” and “the bot works.”",
+        productText: "Upload knowledge, test answers, customize the experience, then paste one tiny snippet into your website.",
+        fromUpload: "From upload to live", howTitle: "A tiny setup. A big reduction in support noise.",
+        simplePricing: "Simple pricing", pricingTitle: "Start small. Upgrade when the questions do.",
+        footerTagline: "Knowledge in. Answers out.",
+        overview: "Overview", knowledge: "Knowledge", chatbot: "Chatbot", embed: "Embed", analytics: "Analytics",
+        goodEvening: "Good evening, Maria.", overviewSub: "Your assistant is getting smarter. Here’s what’s happening. ✦ Maria’s workspace",
+        knowledgeSub: "The sources your assistant uses to answer customers.", chatbotSub: "Test exactly what your customers will experience.",
+        embedSub: "Customize the widget, then copy the code into your website.", analyticsSub: "See what your customers ask when nobody is watching.",
+        previewChatTop: "Maria’s support assistant",
+        previewBot1: "Hi! I’m Maria’s AI assistant, trained on Acme’s docs. How can I help?",
+        previewUser1: "What is your refund policy?",
+        previewBot2: "You can request a refund within 30 days of purchase. I can also show you the exact policy.",
+        previewComposer: "Ask anything about Acme…",
+        knowledgeBase: "KNOWLEDGE BASE", sourcesIndexed: "Sources indexed", answerConfidence: "Answer confidence", questionsAnswered: "Questions answered",
+        card1Title: "Teach it your business", card1Text: "Drop in PDFs, help articles, FAQs and product docs. Contextly keeps the source material organized and searchable.",
+        card2Title: "Test before launch", card2Text: "Chat with your assistant in a private sandbox. Catch weak answers before your customers ever see them.",
+        card3Title: "Ship it anywhere", card3Text: "Choose the look, copy the embed code and add your assistant to any website without changing your stack.",
+        step1Num: "01 / CONNECT", step1Title: "Bring your knowledge.", step1Text: "Upload the sources your team already trusts. No complicated training pipeline.",
+        step2Num: "02 / SHAPE", step2Title: "Give it a personality.", step2Text: "Set the name, welcome message, tone and fallback behavior so it feels like your product.",
+        step3Num: "03 / LAUNCH", step3Title: "Paste. Publish. Done.", step3Text: "Copy one line of embed code. Your assistant appears as a polished floating widget.",
+        planStarter: "Starter", planPro: "Pro", planScale: "Scale",
+        periodForever: "forever", periodMonth: "per month",
+        mostPopular: "MOST POPULAR",
+        f1a: "1 chatbot", f1b: "50 sources", f1c: "100 conversations / month", f1d: "Contextly branding",
+        f2a: "5 chatbots", f2b: "Unlimited sources", f2c: "5,000 conversations / month", f2d: "Remove branding", f2e: "Custom widget styling",
+        f3a: "Unlimited chatbots", f3b: "25,000 conversations", f3c: "Team workspace", f3d: "Analytics & exports", f3e: "Priority support",
+        getStarted: "Get started", startPro: "Start Pro", talkSales: "Talk to sales",
+        proWorkspace: "Pro workspace", sourcesUsed: "24 / 50 sources used",
+        knowledgeBaseTitle: "Knowledge base", manage: "Manage", dropFiles: "Drop files here or browse", fileTypes: "PDF, DOCX, TXT up to 25 MB",
+        indexed24: "Indexed · 2.4 MB", indexed84: "Indexed · 84 KB",
+        livePreview: "Live preview", online: "● Online", poweredBy: "Powered by your knowledge",
+        ovBot1: "Hi! Ask me anything about Acme.", ovUser1: "Can I cancel anytime?", ovBot2: "Yes. You can cancel from your account settings at any time.",
+        askQuestion: "Ask a question…",
+        sources: "Sources", sourcesTotal: "24 total", addSource: "+ Add source", addDocs: "Add documents to your knowledge base", dragDrop: "Drag & drop or click to upload",
+        indexed2min: "Indexed 2 minutes ago · 2.4 MB", indexedToday: "Indexed today · 1.1 MB", syncedToday: "Synced today · 38 pages",
+        onlineSources: "Online · 24 sources",
+        cbBot1: "Hey! I’m the Acme Assistant. I can help with products, billing, shipping and policies.",
+        cbUser1: "How long does shipping take?",
+        cbBot2: "Standard shipping usually takes 3–5 business days. Express delivery takes 1–2 business days.",
+        typeTest: "Type a test question…",
+        tabAppearance: "Appearance", tabBehavior: "Behavior", tabAdvanced: "Advanced",
+        widgetSettings: "Widget settings", assistantName: "Assistant name", welcomeMessage: "Welcome message",
+        showBadge: "Show Contextly badge", installCode: "Install code", copy: "Copy",
+        pasteBody: "Paste before the closing </body> tag.",
+        convMonth: "Conversations this month", qSuccess: "Questions answered successfully", avgTime: "Average time to first answer",
+        topQuestions: "Top questions", last30: "Last 30 days",
+        q1: "What is your refund policy?", q2: "How long does shipping take?", q3: "Can I change my plan?",
+        paywallTitle: "Give your chatbot more room.", paywallText: "You’ve reached the Starter limits. Upgrade to keep building.",
+        mChats100: "100 chats / month", mChats5k: "5,000 chats / month", mChats25k: "25,000 chats / month",
+        current: "Current", upgrade: "Upgrade", contactSales: "Contact sales",
+        toastPro: "Pro plan activated — prototype mode", toastUpload: "Upload simulated — source indexed successfully", toastCopy: "Embed code copied",
+        welcomeInputVal: "Hi! How can I help?",
+        myBots: "My bots", uploadDoc: "Upload document", chooseFile: "Choose file",
+        chatPlaceholder: "Write a message…", send: "Send",
+        loginTitle: "Welcome back", loginText: "Sign in to your Contextly workspace.",
+        emailLabel: "Email", passwordLabel: "Password", loginSubmit: "Sign in",
+        loginHint: "Demo: any email and password (min 4 characters).",
+        noAccount: "No account? Start building free →"
+      },
+      ru: {
+        pageTitle: "Contextly — Создайте чат-бота из ваших знаний",
+        login: "Войти", startBuilding: "Начать", productNav: "Продукт", howNav: "Как это работает", pricingNav: "Тарифы",
+        eyebrow: "Ваши знания наконец работают", heroTitle: "Превратите документы компании в чат-бота, которым действительно хочется пользоваться.",
+        heroText: "Contextly изучает сайт, PDF, справочный центр и внутренние документы — и даёт клиентам быстрые и точные ответы.",
+        buildChatbot: "Создать чат-бота →", seeHow: "Как это работает", miniNote: "Без карты · Запуск за 5 минут · Бесплатный тариф",
+        calmWorkspace: "Спокойное рабочее пространство", productTitle: "Всё между «у нас есть документы» и «бот работает».",
+        productText: "Загрузите знания, проверьте ответы, настройте интерфейс и добавьте одну строку на свой сайт.",
+        fromUpload: "От загрузки до запуска", howTitle: "Минимум настроек. Максимум тишины в поддержке.",
+        simplePricing: "Простые тарифы", pricingTitle: "Начните с малого. Переходите выше, когда вопросов становится больше.",
+        footerTagline: "Знания внутри. Ответы снаружи.",
+        overview: "Обзор", knowledge: "База знаний", chatbot: "Чат-бот", embed: "Встраивание", analytics: "Аналитика",
+        goodEvening: "Добрый вечер, Мария.", overviewSub: "Ваш ассистент становится умнее. Вот что происходит. ✦ Пространство Марии",
+        knowledgeSub: "Источники, которые ассистент использует для ответов клиентам.", chatbotSub: "Проверьте именно тот опыт, который увидят ваши клиенты.",
+        embedSub: "Настройте виджет и скопируйте код на свой сайт.", analyticsSub: "Посмотрите, о чём спрашивают клиенты, когда никто не наблюдает.",
+        previewChatTop: "Ассистент поддержки Марии",
+        previewBot1: "Привет! Я AI-ассистент Марии, обученный на документах Acme. Чем помочь?",
+        previewUser1: "Какая у вас политика возврата?",
+        previewBot2: "Вы можете запросить возврат в течение 30 дней после покупки. Могу показать точный текст политики.",
+        previewComposer: "Спросите что угодно об Acme…",
+        knowledgeBase: "БАЗА ЗНАНИЙ", sourcesIndexed: "Источников проиндексировано", answerConfidence: "Уверенность ответа", questionsAnswered: "Вопросов отвечено",
+        card1Title: "Обучите его бизнесу", card1Text: "Загрузите PDF, статьи помощи, FAQ и продуктовые документы. Contextly хранит источники в порядке и делает их доступными для поиска.",
+        card2Title: "Проверьте до запуска", card2Text: "Пообщайтесь с ассистентом в закрытой песочнице. Найдите слабые ответы до того, как их увидят клиенты.",
+        card3Title: "Запустите где угодно", card3Text: "Выберите внешний вид, скопируйте код встраивания и добавьте ассистента на любой сайт без смены стека.",
+        step1Num: "01 / ПОДКЛЮЧИТЬ", step1Title: "Добавьте знания.", step1Text: "Загрузите источники, которым уже доверяет команда. Без сложного пайплайна обучения.",
+        step2Num: "02 / НАСТРОИТЬ", step2Title: "Дайте характер.", step2Text: "Задайте имя, приветствие, тон и поведение при незнании — чтобы ощущалось как ваш продукт.",
+        step3Num: "03 / ЗАПУСТИТЬ", step3Title: "Вставить. Опубликовать. Готово.", step3Text: "Скопируйте одну строку кода. Ассистент появится как аккуратный плавающий виджет.",
+        planStarter: "Старт", planPro: "Pro", planScale: "Scale",
+        periodForever: "навсегда", periodMonth: "в месяц",
+        mostPopular: "ПОПУЛЯРНЫЙ",
+        f1a: "1 чат-бот", f1b: "50 источников", f1c: "100 диалогов / месяц", f1d: "Брендинг Contextly",
+        f2a: "5 чат-ботов", f2b: "Безлимит источников", f2c: "5 000 диалогов / месяц", f2d: "Без брендинга", f2e: "Свой стиль виджета",
+        f3a: "Безлимит чат-ботов", f3b: "25 000 диалогов", f3c: "Командное пространство", f3d: "Аналитика и экспорт", f3e: "Приоритетная поддержка",
+        getStarted: "Начать", startPro: "Взять Pro", talkSales: "Связаться с продажами",
+        proWorkspace: "Рабочее пространство Pro", sourcesUsed: "24 / 50 источников",
+        knowledgeBaseTitle: "База знаний", manage: "Управлять", dropFiles: "Перетащите файлы или выберите", fileTypes: "PDF, DOCX, TXT до 25 МБ",
+        indexed24: "Проиндексирован · 2,4 МБ", indexed84: "Проиндексирован · 84 КБ",
+        livePreview: "Живой превью", online: "● Онлайн", poweredBy: "На основе ваших знаний",
+        ovBot1: "Привет! Спросите что угодно об Acme.", ovUser1: "Можно ли отменить в любой момент?", ovBot2: "Да. Отменить подписку можно в настройках аккаунта в любое время.",
+        askQuestion: "Задайте вопрос…",
+        sources: "Источники", sourcesTotal: "всего 24", addSource: "+ Добавить источник", addDocs: "Добавьте документы в базу знаний", dragDrop: "Перетащите или нажмите, чтобы загрузить",
+        indexed2min: "Проиндексирован 2 минуты назад · 2,4 МБ", indexedToday: "Проиндексирован сегодня · 1,1 МБ", syncedToday: "Синхронизирован сегодня · 38 страниц",
+        onlineSources: "Онлайн · 24 источника",
+        cbBot1: "Привет! Я ассистент Acme. Помогу с продуктами, оплатой, доставкой и политиками.",
+        cbUser1: "Сколько занимает доставка?",
+        cbBot2: "Обычная доставка обычно 3–5 рабочих дней. Экспресс — 1–2 рабочих дня.",
+        typeTest: "Введите тестовый вопрос…",
+        tabAppearance: "Внешний вид", tabBehavior: "Поведение", tabAdvanced: "Расширенные",
+        widgetSettings: "Настройки виджета", assistantName: "Имя ассистента", welcomeMessage: "Приветственное сообщение",
+        showBadge: "Показывать бейдж Contextly", installCode: "Код установки", copy: "Копировать",
+        pasteBody: "Вставьте перед закрывающим тегом </body>.",
+        convMonth: "Диалогов за месяц", qSuccess: "Вопросов отвечено успешно", avgTime: "Среднее время до первого ответа",
+        topQuestions: "Популярные вопросы", last30: "Последние 30 дней",
+        q1: "Какая у вас политика возврата?", q2: "Сколько занимает доставка?", q3: "Можно ли сменить тариф?",
+        paywallTitle: "Дайте чат-боту больше пространства.", paywallText: "Вы достигли лимитов тарифа Старт. Обновитесь, чтобы продолжить.",
+        mChats100: "100 чатов / месяц", mChats5k: "5 000 чатов / месяц", mChats25k: "25 000 чатов / месяц",
+        current: "Текущий", upgrade: "Обновить", contactSales: "Связаться с продажами",
+        toastPro: "Тариф Pro активирован — режим прототипа", toastUpload: "Загрузка имитирована — источник проиндексирован", toastCopy: "Код встраивания скопирован",
+        welcomeInputVal: "Привет! Чем могу помочь?",
+        myBots: "Мои боты", uploadDoc: "Загрузить документ", chooseFile: "Выбрать файл",
+        chatPlaceholder: "Напишите сообщение…", send: "Отправить",
+        loginTitle: "С возвращением", loginText: "Войдите в рабочее пространство Contextly.",
+        emailLabel: "Email", passwordLabel: "Пароль", loginSubmit: "Войти",
+        loginHint: "Демо: любой email и пароль (минимум 4 символа).",
+        noAccount: "Нет аккаунта? Начать бесплатно →"
+      }
+    };
+
+    function applyLanguage(lang) {
+      const dict = I18N[lang] || I18N.en;
+      document.documentElement.lang = lang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        if (dict[key] != null) el.textContent = dict[key];
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (dict[key] != null) el.placeholder = dict[key];
+      });
+      if (dict.pageTitle) document.title = dict.pageTitle;
+      const welcome = document.getElementById("welcomeInput");
+      if (welcome && dict.welcomeInputVal) welcome.value = dict.welcomeInputVal;
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
+      localStorage.setItem("contextly-language", lang);
+      const current = document.querySelector(".app-nav button.active")?.dataset.page || "overview";
+      const crumb = document.getElementById("crumb");
+      if (crumb && dict[current]) crumb.textContent = dict[current];
+      if (current === "chatbot" && document.getElementById("botChatMessages")) initBotChat();
+    }
+
+    function setLanguage(lang) {
+      const prev = localStorage.getItem("contextly-language") || "en";
+      if (prev === lang) {
+        applyLanguage(lang);
+        return;
+      }
+      // smooth cross-fade of all translated text
+      document.body.classList.add("lang-fading");
+      setTimeout(() => {
+        applyLanguage(lang);
+        requestAnimationFrame(() => {
+          document.body.classList.remove("lang-fading");
+          document.body.classList.add("lang-faded-in");
+          setTimeout(() => document.body.classList.remove("lang-faded-in"), 320);
+        });
+      }, 160);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyLanguage(localStorage.getItem("contextly-language") || "en");
+
+      // Smooth scroll for landing nav (Product / How / Pricing)
+      document.querySelectorAll('.navlinks a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+          const id = a.getAttribute('href');
+          const el = document.querySelector(id);
+          if (!el) return;
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+      // Hero "See how it works" also smooth
+      document.querySelectorAll('[data-i18n="seeHow"]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          document.querySelector('#product')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      // Scroll reveal — lazy appear with stagger
+      const revealEls = document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale");
+      if ("IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("revealed");
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        revealEls.forEach(el => io.observe(el));
+      } else {
+        revealEls.forEach(el => el.classList.add("revealed"));
+      }
+
+      // Cursor spotlight
+      const spot = document.getElementById("spotlight");
+      let sx = 0, sy = 0, tx = 0, ty = 0;
+      const moveSpot = () => {
+        sx += (tx - sx) * .12;
+        sy += (ty - sy) * .12;
+        if (spot) spot.style.transform = `translate(${sx}px,${sy}px) translate(-50%,-50%)`;
+        requestAnimationFrame(moveSpot);
+      };
+      moveSpot();
+      window.addEventListener("pointermove", e => {
+        tx = e.clientX; ty = e.clientY;
+      }, { passive: true });
+
+      // Soft 3D tilt on glass cards / steps / prices
+      const tiltEls = document.querySelectorAll(".card, .price, .step");
+      tiltEls.forEach(el => {
+        el.addEventListener("pointermove", e => {
+          const r = el.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - .5;
+          const y = (e.clientY - r.top) / r.height - .5;
+          el.style.transform = `translateY(-8px) scale(1.015) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+          el.style.transition = "transform .12s ease-out";
+        });
+        el.addEventListener("pointerleave", () => {
+          el.style.transform = "";
+          el.style.transition = "transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s";
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

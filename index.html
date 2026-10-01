@@ -41,10 +41,12 @@ header{
   justify-content:space-between;
   position:sticky;
   top:0;
-  background:rgba(242,240,233,.94);
+  background:#f2f0e9;
   -webkit-backdrop-filter:blur(10px);
   backdrop-filter:blur(10px);
   z-index:20;
+  padding:0 22px;
+  margin:0 -22px;
 }
 .brand{font-weight:800;letter-spacing:-.04em}
 nav{
@@ -57,16 +59,17 @@ nav a:hover{text-decoration:underline}
 
 /* HERO */
 .hero{
-  min-height:calc(100vh - 64px);
+  min-height:0;
   display:grid;
   grid-template-columns:1.35fr .65fr;
   border-bottom:1px solid var(--line);
 }
 .hero-main{
-  padding:8vh 0 7vh;
+  padding:48px 0 40px;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
+  justify-content:flex-start;
+  gap:56px;
 }
 .eyebrow{
   font-size:11px;
@@ -134,7 +137,7 @@ h1{
 .hero-visual{
   aspect-ratio:1;
   border:1px solid var(--line);
-  background:var(--accent);
+  background:transparent;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -627,11 +630,26 @@ nav a:focus-visible,
 
 /* RESPONSIVE */
 @media(max-width:1000px){
-  .hero{grid-template-columns:1fr}
+    .hero-visual{
+    aspect-ratio:auto;
+    max-height:480px;
+  }
+  .hero-visual img{
+    height:auto;
+  }
+  .hero{
+    grid-template-columns:1fr;
+    min-height:0;
+  }
+  .hero-main{
+    padding:48px 0 40px;
+    justify-content:flex-start;
+  }
   .hero-side{
     border-left:0;
     border-top:1px solid var(--line);
-    min-height:480px;
+    min-height:0;
+    padding:22px;
   }
   .project:nth-child(n){
     grid-column:span 6;
@@ -676,11 +694,32 @@ nav a:focus-visible,
   }
   nav a{white-space:nowrap}
 
-  h1{font-size:16vw;margin-bottom:28px}
-  .hero-main{padding-top:48px}
-  .eyebrow{margin-bottom:32px}
-  .hero-copy{font-size:17px}
-  .hero-side{min-height:350px}
+   h1{font-size:16vw;margin-bottom:20px}
+  .hero-main{
+    padding:24px 0 20px;
+    justify-content:flex-start;
+  }
+  .eyebrow{margin-bottom:14px}
+  .hero-copy{font-size:17px;margin-top:16px}
+  .hero-cta{margin-top:18px;height:64px;font-size:14px}
+  .hero-side{
+    min-height:0;
+    padding:14px;
+  }
+  .hero-visual{
+    aspect-ratio:auto;
+    height:auto;
+    max-height:320px;
+  }
+  .hero-visual img{
+    width:100%;
+    height:auto;
+    object-fit:contain;
+  }
+  .hero-meta{
+    margin-top:14px;
+    font-size:10px;
+  }
 
   .work-intro,
   .about,
